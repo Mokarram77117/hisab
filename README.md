@@ -1,7 +1,7 @@
 # Hisab — হিসাব
 
 Personal finance, expense tracking and a digital tally khata (dhar-dena ledger) for Bangladesh.
-Bangla-first, mobile-first, installable as a PWA.
+English by default with full Bangla support, mobile-first, installable as a PWA.
 
 **Stack:** Next.js 16 (App Router, Server Components, Server Actions) · React 19 · TypeScript (strict) ·
 Tailwind CSS 4 · shadcn/ui (Radix) · Recharts · React Hook Form + Zod · PostgreSQL (Neon) · Drizzle ORM ·
@@ -81,7 +81,9 @@ pnpm db:migrate                    # applies pending migrations
 ## Deploying to Vercel
 
 1. Import the repository in Vercel.
-2. **Storage → Connect Neon Postgres** (sets `DATABASE_URL`).
+2. **Storage → Connect Neon Postgres** (sets `DATABASE_URL`). Create the database in
+   **AWS ap-southeast-1 (Singapore)** — `vercel.json` pins functions to `sin1`, the closest region to
+   Bangladesh. Keeping the database and functions in the same region is the biggest speed factor.
 3. **Storage → Create Blob store** (sets `BLOB_READ_WRITE_TOKEN`). Uploads use private access.
 4. Add environment variables: `BETTER_AUTH_SECRET`, `CRON_SECRET`, and optionally `BETTER_AUTH_URL`
    (your custom domain), `RESEND_API_KEY`, `EMAIL_FROM`.
@@ -113,3 +115,14 @@ tests/          unit, db integration and e2e checks
 ```
 # hisab
 # hisab
+
+## Performance notes
+
+* `pnpm dev` compiles each page on first visit and is much slower than production. To feel real speed
+  locally, run `pnpm build && pnpm start`. With 2,000 transactions, pages render in roughly 10–30 ms on
+  the server (`pnpm tsx tests/perf.ts`).
+* Every page has an instant loading skeleton; detail pages check ownership in a segment layout so
+  missing or foreign ids still return a real 404.
+* The quick-add sheet prefetches accounts and categories when the browser is idle.
+* Charts load lazily; the Bengali font downloads only when Bangla text is shown.
+* Page-load reminder generation is throttled to once per 30 minutes per user (the daily cron covers the rest).

@@ -74,7 +74,7 @@ export const profiles = pgTable("profiles", {
   displayName: text("display_name").notNull(),
   avatarUrl: text("avatar_url"),
   preferredCurrency: text("preferred_currency").notNull().default("BDT"),
-  locale: text("locale").notNull().default("bn"),
+  locale: text("locale").notNull().default("en"),
   timezone: text("timezone").notNull().default("Asia/Dhaka"),
   /** 0 = Sunday … 6 = Saturday. Bangladesh calendars commonly start on Saturday. */
   startOfWeek: smallint("start_of_week").notNull().default(6),

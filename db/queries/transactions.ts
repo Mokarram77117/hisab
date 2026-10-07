@@ -212,3 +212,13 @@ export async function exportTransactions(userId: string, filters: TransactionFil
     .limit(cap);
   return rows.map(toItem);
 }
+
+/** Cheap ownership check for route layouts. */
+export async function transactionExists(userId: string, id: string) {
+  const [row] = await db
+    .select({ id: transactions.id })
+    .from(transactions)
+    .where(and(eq(transactions.userId, userId), eq(transactions.id, id)))
+    .limit(1);
+  return Boolean(row);
+}

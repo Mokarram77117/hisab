@@ -29,7 +29,7 @@ const trustedOrigins = [
 function localeFromRequest(request?: Request | null): string {
   const cookie = request?.headers.get("cookie") ?? "";
   const match = cookie.match(new RegExp(`${LOCALE_COOKIE}=(\\w+)`));
-  return match && isLocale(match[1]) ? match[1] : "bn";
+  return match && isLocale(match[1]) ? match[1] : "en";
 }
 
 export const auth = betterAuth({

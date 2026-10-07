@@ -2,7 +2,7 @@ import { AlarmClock, ArrowDownLeft, ArrowUpRight, ChevronRight, PieChart, Plus, 
 import type { Metadata } from "next";
 import Link from "next/link";
 import { after } from "next/server";
-import { generateRemindersForUser } from "@/lib/notifications/generate";
+import { maybeGenerateReminders } from "@/lib/notifications/generate";
 import { LazyCategoryDonut, LazySpendingTrendPanel } from "@/components/charts/lazy";
 import { EmptyState } from "@/components/common/empty-state";
 import { BalanceCard } from "@/components/dashboard/balance-card";
@@ -62,7 +62,7 @@ export default async function DashboardPage() {
 
   // Keep reminders fresh between cron runs; idempotent and off the critical path.
   after(() =>
-    generateRemindersForUser(user.id, { today, locale, currency }).catch((error) =>
+    maybeGenerateReminders(user.id, { today, locale, currency }).catch((error) =>
       console.error("[reminders] generation failed:", error instanceof Error ? error.message : "unknown"),
     ),
   );

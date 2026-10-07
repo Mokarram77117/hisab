@@ -9,7 +9,7 @@ import { categories, profiles } from "@/db/schema";
 export async function createStarterData(
   executor: DbExecutor,
   user: { id: string; name: string },
-  locale = "bn",
+  locale = "en",
 ) {
   await executor.transaction(async (tx) => {
     await tx

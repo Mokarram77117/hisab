@@ -37,3 +37,13 @@ export function useEntryOptions() {
 export function invalidateEntryOptions() {
   cached = null;
 }
+
+/** Fetch options once the browser is idle, so the first quick-add opens without a skeleton. */
+export function prefetchEntryOptions() {
+  if (cached) return;
+  getEntryOptionsAction()
+    .then((result) => {
+      if (result.ok && !cached) cached = result.data;
+    })
+    .catch(() => {});
+}

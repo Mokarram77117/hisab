@@ -11,10 +11,9 @@ import { requireUser } from "@/lib/auth/session";
 
 export default async function AppLayout({ children }: { children: React.ReactNode }) {
   const user = await requireUser();
-  const profile = await getProfile(user.id, user.name);
+  const [profile, unread] = await Promise.all([getProfile(user.id, user.name), getUnreadCount(user.id)]);
   if (!profile.onboardingCompletedAt) redirect("/onboarding");
 
-  const unread = await getUnreadCount(user.id);
   const shellUser = { name: profile.displayName, email: user.email, image: profile.avatarUrl ? `/api/avatar?v=${profile.updatedAt.getTime()}` : user.image };
 
   return (

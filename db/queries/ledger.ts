@@ -1,5 +1,6 @@
 import "server-only";
 import { and, asc, eq, gte, inArray, isNotNull, lt, lte, sql } from "drizzle-orm";
+import { cache } from "react";
 import { db } from "@/db/client";
 import { accounts, attachments, contacts, transactions } from "@/db/schema";
 import type { DateString } from "@/lib/dates";
@@ -133,14 +134,14 @@ export async function getDebtSummary(userId: string, today: DateString): Promise
   return summarizeDebts(await listContactBalances(userId, today));
 }
 
-export async function getContact(userId: string, contactId: string) {
+export const getContact = cache(async (userId: string, contactId: string) => {
   const [row] = await db
     .select()
     .from(contacts)
     .where(and(eq(contacts.userId, userId), eq(contacts.id, contactId)))
     .limit(1);
   return row ?? null;
-}
+});
 
 export type LedgerEntry = {
   id: string;

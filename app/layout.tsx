@@ -12,8 +12,10 @@ const inter = Inter({ variable: "--font-inter", subsets: ["latin"], display: "sw
 const bengali = Noto_Sans_Bengali({
   variable: "--font-bengali",
   subsets: ["bengali"],
-  weight: ["400", "500", "600", "700"],
+  weight: ["400", "500", "600"],
   display: "swap",
+  // English is the default; browsers fetch Bengali glyphs only when Bangla text is on screen.
+  preload: false,
 });
 
 export async function generateMetadata(): Promise<Metadata> {

@@ -25,7 +25,7 @@ export async function generateRemindersForUser(
   userId: string,
   opts: { today: DateString; locale: string; currency: string },
 ): Promise<number> {
-  const locale = isLocale(opts.locale) ? opts.locale : "bn";
+  const locale = isLocale(opts.locale) ? opts.locale : "en";
   const t = createTranslator(getDictionary(locale));
   const money = (v: string) => formatCurrency(absMoney(v), { currency: opts.currency });
   const rows: Array<typeof notifications.$inferInsert> = [];
@@ -71,4 +71,16 @@ export async function generateRemindersForUser(
     .onConflictDoNothing({ target: [notifications.userId, notifications.dedupeKey] })
     .returning({ id: notifications.id });
   return inserted.length;
+}
+
+const lastRun = new Map<string, number>();
+const THROTTLE_MS = 30 * 60 * 1000;
+
+/** Page-load trigger: skips work if this instance generated reminders for the user recently. */
+export async function maybeGenerateReminders(userId: string, opts: { today: DateString; locale: string; currency: string }) {
+  const now = Date.now();
+  if ((lastRun.get(userId) ?? 0) > now - THROTTLE_MS) return 0;
+  lastRun.set(userId, now);
+  if (lastRun.size > 5000) lastRun.clear();
+  return generateRemindersForUser(userId, opts);
 }
