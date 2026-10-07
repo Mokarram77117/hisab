@@ -112,3 +112,4 @@ locales/        en.ts (source of truth for keys), bn.ts
 tests/          unit, db integration and e2e checks
 ```
 # hisab
+# hisab
